@@ -1,0 +1,102 @@
+#
+# CS 445 Gumstix Makefile
+#   Users should create a unique copy of this file for
+#   every new executable.
+#
+#   INSTRUCTIONS:
+#      1) Ensure your new source file is in it's own directory, and that your file containing main() ends with .C (note the
+#         capital C)
+#      2) Create a copy of this makefile in that directory, and ensure that it is named "Makefile"
+#      3) If you have more than one C++ file (e.g. Main.C, MyObject.C and MyObject.H) in your project, then
+#         add the name of your object to the list of dependencies. (e.g. add MyObject.o to the list).
+#      3) Export the GUMSTIX_IP variable below.
+#      4) PROGRAM_NAME should be the name of the file that contains the "main" function for your application. 
+#         For example, if you have a project called "lab2.C", PROGRAM_NAME should be "lab2".
+#      5) Run "make PROGRAM_NAME", where PROGRAM_NAME should be replaced by the name of your program. In the above example,
+#         you would type "make lab2". This will cross-compile your code so that it can run on the Gumstix' processor
+#      6) Type "make install". This will copy the cross-compiled binary to the gumstix over ethernet, and will also
+#         create a simple script called "run_PROGRAM_NAME", where PROGRAM_NAME is again replaced by the name of you program.
+#      7) Run the script created in the above step. E.g. if your program is called lab2, you would type "./run_lab2".
+#         This will automatically open an ssh session, and run the already transfered executable for you. Simple!
+
+
+###################################################################################################################
+#  Environment variables that need to be exported, eg "export MYVARIABLE=MYVALUE"
+#
+#  GUMSTIX_IP  is the ip of the robot that we want to install the program on
+#  		--This should be labeled on your board, so for example if you board has a "g1" sticker
+#  		  you should type "export GUMSTIX_IP=g1"
+#
+###################################################################################################################
+###################################################################################################################
+#   Edit the following variables to customize this file for
+#   your specific gumstix and application
+    PROGRAM_NAME=Main
+#
+###################################################################################################################
+#Warning: Leave the rest of the stuff below alone unless you really know what you are doing.
+
+USERNAME = $(shell whoami)
+
+CC=g++
+
+GUMROOT = $(HOME)/ilab/gumstix
+CAPTURE = $(GUMROOT)/captureMjpeg
+
+IceE_BASEDIR	  = /opt/IceE-1.2.0
+LIBS              = -lncurses -lpthread -lIceE 
+CPPFLAGS          = -O2 -I. -I$(GUMROOT) -I$(IceE_BASEDIR)/include -I$(GUMROOT)/Ice
+LDFLAGS           = -L$(IceE_BASEDIR)/lib -DLINUX -DVERSION=\"0.2.4\"
+
+
+DEPENDENCIES =  $(CAPTURE)/color.o 						\
+		$(CAPTURE)/utils.o            $(CAPTURE)/v4l2uvc.o 		\
+		$(GUMROOT)/serial/Serial.o    $(GUMROOT)/gumbot/Gumbot.o 	\
+		$(GUMROOT)/Ice/ImageIce.o     $(GUMROOT)/Ice/CSCI445.o    	\
+		$(GUMROOT)/Image/Image.o      $(GUMROOT)/Util/Alloc.o      	\
+		$(GUMROOT)/Util/AllocAux.o    $(GUMROOT)/rutz/prof.o 		\
+		$(GUMROOT)/rutz/mutex.o       $(GUMROOT)/rutz/pipe.o  		\
+		$(GUMROOT)/rutz/trace.o       $(GUMROOT)/rutz/time.o    	\
+		$(GUMROOT)/Util/sformat.o     $(GUMROOT)/Util/log.o    		\
+		$(GUMROOT)/rutz/abort.o       $(GUMROOT)/rutz/debug.o 		\
+		$(GUMROOT)/rutz/backtrace.o   $(GUMROOT)/rutz/demangle.o 	\
+		$(GUMROOT)/rutz/sfmt.o        $(GUMROOT)/rutz/freelist.o	\
+		$(GUMROOT)/rutz/fstring.o     $(GUMROOT)/rutz/error.o 		\
+		$(GUMROOT)/rutz/stdiobuf.o    $(GUMROOT)/rutz/error_context.o 	\
+		$(GUMROOT)/Image/ArrayData.o  $(GUMROOT)/Image/CutPaste.o  \
+		$(GUMROOT)/final/Segmenter.o $(GUMROOT)/final/Blob.o \
+		$(GUMROOT)/final/Controller.o $(GUMROOT)/final/Display.o \
+		$(GUMROOT)/final/Map.o $(GUMROOT)/final/SimpleGumbot.o \
+		$(GUMROOT)/final/Particle.o $(GUMROOT)/final/Room.o \
+		$(GUMROOT)/final/Simulation.o $(GUMROOT)/final/State.o 
+
+all: $(PROGRAM_NAME)
+
+$(PROGRAM_NAME): $(PROGRAM_NAME).o $(DEPENDENCIES)
+	@echo Compiling Application $<
+	@$(CC)  $(DEPENDENCIES) $(PROGRAM_NAME).o $(CPPFLAGS) $(LDFLAGS) $(LIBS) -o $(PROGRAM_NAME)
+
+%.o :: %.c 
+	@echo Compiling C File $<
+	@$(CC) -c -o $@ $< $(CPPFLAGS)
+
+%.o :: %.C 
+	@echo Compiling C++ File $<
+	@$(CC) -c -o $@ $< $(CPPFLAGS)
+
+%.o :: %.cpp 
+	@echo Compiling C++ File $<
+	@$(CC) -c -o $@ $< $(CPPFLAGS)
+
+%.o :: %.cc 
+	@echo Compiling C++ File $<
+	@$(CC) -c -o $@ $< $(CPPFLAGS)
+
+install:
+	@echo "ssh -x $(USERNAME)@$(GUMSTIX_IP) /home/$(USERNAME)/$(PROGRAM_NAME)" > run_$(PROGRAM_NAME)
+	@chmod +x run_$(PROGRAM_NAME)
+	@echo Transfering main... `scp $(PROGRAM_NAME) "$(USERNAME)@$(GUMSTIX_IP):/home/$(USERNAME)"`;
+	@echo Transfering configs... `scp *.config "$(USERNAME)@$(GUMSTIX_IP):/home/$(USERNAME)"`;
+	@echo "Program \"$(PROGRAM_NAME)\" copied to $(GUMSTIX_IP). Please execute run_$(PROGRAM_NAME) to run your program on your Gumbot."
+
+

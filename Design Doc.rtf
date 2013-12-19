@@ -1,0 +1,84 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red255\green0\blue0;\red0\green128\blue64;}
+\margl1440\margr1440\vieww12240\viewh14740\viewkind1
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf0 CSCI 445 - Final Project Design Doc\
+Project Members: Josh Villbrandt, Kevin Greene, Gabriel Fuhrman, Ragoo\
+\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\b \cf0 Tasks\cf2 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\b0 \cf0 Josh - Simulation\
+Kevin - Map (implement a search algorithm)\
+Gabe, Ragoo - SimpleGumbot\
+Note: please work in a folder other than "final" as I will probably overwrite anything you put in there\
+\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\b \cf0 Blob
+\b0  (\cf3 complete\cf0 , testing needed)\
+storage container for image blobs that can easily merge with other blobs, calculate its own center of mass, and tested against other blobs for equality\
+\
+
+\b Controller
+\b0  (\cf3 complete\cf0 , testing needed)\
+a basic PID implementation used by movement\
+saves settings to a file\
+\
+
+\b Display
+\b0  (\cf3 complete\cf0 )\
+easily display lots of data through the terminal using ncurses\
+\
+
+\b Main
+\b0  (\cf2 incomplete\cf0 )\
+sets up all of the other class\
+acts a state machine and controls the other classes based on situational knowledge\
+\
+
+\b Map
+\b0  (\cf2 incomplete\cf0 , needs search function to be written)\
+reads in a map layout from a file that includes walls and a starting location\
+can search itself to create an optimal path from one state to another\
+\
+
+\b SimpleGumbot
+\b0  (\cf2 incomplete\cf0 )\
+controls all of the gumbot's movement\
+simplifies other functions like identifying an object\
+\
+
+\b Particle
+\b0  (\cf3 complete\cf0 )\
+used by Simulation to store the probability and state of simulated particles\
+\
+
+\b Room
+\b0  (\cf3 complete\cf0 )\
+used by Main to store knowledge about a room including entranceState and the room's contents\
+\
+
+\b Segmenter
+\b0  (\cf2 incomplete\cf0 , need to work on HSB)\
+segment's an image into blobs\
+can track blobs over multiple frames\
+\
+
+\b Simulation
+\b0  (\cf2 incomplete\cf0 , need to check probabilities and write filtering)\
+localization from simulation\
+\
+
+\b State
+\b0  (\cf3 complete\cf0 )\
+stores an x coordination, a y coordination, and an angle\
+\
+\
+}
